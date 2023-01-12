@@ -33,11 +33,10 @@ const AuthForm = () => {
         }
       }).then(res=>{
         if(res.ok){
-           console.log(res)
-        Setloading(false);
-
-
-
+           Setloading(false);
+          return res.json();
+          
+       
         }
         else{
           Setloading(false);
@@ -47,7 +46,7 @@ const AuthForm = () => {
             alert(data.error.message)
           })
         }
-      })
+      }).then((data)=>console.log(data)).catch((err)=>alert(err))
     
     }else{
         Setloading(true);
