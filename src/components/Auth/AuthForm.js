@@ -1,8 +1,11 @@
 import { useState,useRef } from 'react';
+import { useContext } from 'react';
+import {Context} from '../../Context/Context';
 
 import classes from './AuthForm.module.css';
 
 const AuthForm = () => {
+  const ctx=useContext(Context)
   const [isLogin, setIsLogin] = useState(true);
   const [loading,Setloading]=useState(false);
   const emailInput=useRef();
@@ -17,41 +20,17 @@ const AuthForm = () => {
     const enteredPassword=passwordInput.current.value;
 
    
-
+  let url;
     if(isLogin){ 
-       Setloading(true);
+      Setloading(true)
+      url='https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCJplznXeTsFmGPjrJiYpE3mapkzAYlPzA'
+
       
-        fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCJplznXeTsFmGPjrJiYpE3mapkzAYlPzA',{
-        method:"POST",
-        body:JSON.stringify({
-          email:enteredEmail,
-          password:enteredPassword,
-          returnSecureToken:true,
-        }),
-        headers:{
-          'Content-Type':'application/json'
-        }
-      }).then(res=>{
-        if(res.ok){
-           Setloading(false);
-          return res.json();
-          
-       
-        }
-        else{
-          Setloading(false);
-            res.json().then(data=>{
-           
-            console.log("ELSE",data)
-            alert(data.error.message)
-          })
-        }
-      }).then((data)=>console.log(data)).catch((err)=>alert(err))
-    
     }else{
-        Setloading(true);
-        
-          fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCJplznXeTsFmGPjrJiYpE3mapkzAYlPzA',{
+       Setloading(true)
+       url='https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCJplznXeTsFmGPjrJiYpE3mapkzAYlPzA'}
+
+          fetch(url,{
         method:"POST",
         body:JSON.stringify({
           email:enteredEmail,
@@ -62,24 +41,24 @@ const AuthForm = () => {
           'Content-Type':'application/json'
         }
       }).then(res=>{
+         Setloading(false);
         if(res.ok){
-           console.log(res)
-        Setloading(false);
-
-
-
-        }
+          
+          return res.json()
+       
+}
         else{
-          Setloading(false);
-            res.json().then(data=>{
-           
-            console.log("ELSE",data)
-            alert(data.error.message)
+        
+          return res.json().then(data=>{
+           alert(data.error.message)
           })
         }
-      })
+      }).then((data)=>{ 
+        console.log(data.idToken)
+        ctx.login(data.idToken);
+      }).catch((err)=>console.log('Error',err.message))
     }
-    }
+    
       
     
 
