@@ -2,8 +2,10 @@ import classes from './ProfileForm.module.css';
 import { useState } from 'react';
 import { Context } from '../../Context/Context';
 import { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 
 const ProfileForm = () => {
+  const history=useHistory();
   const [password,setpassword]=useState();
   const ctx=useContext(Context)
 
@@ -32,6 +34,7 @@ const ProfileForm = () => {
         if(res.ok){
           
           return res.json()
+          
        
 }
         else{
@@ -41,6 +44,7 @@ const ProfileForm = () => {
           })
         }
       }).then((data)=>{ 
+        history.replace('/')
         console.log(data)
        
       }).catch((err)=>console.log('Error',err.message))
